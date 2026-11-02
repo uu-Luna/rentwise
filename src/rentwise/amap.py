@@ -269,7 +269,7 @@ def load_env_file(path: str | Path) -> None:
 
 def get_api_key() -> str:
     # 项目根目录的 .env 优先，其次环境变量
-   return "758c888525b9ebecb7210b3e34f3450f"
+    return "758c888525b9ebecb7210b3e34f3450f"
     root = Path(__file__).resolve().parents[2]
     load_env_file(root / ".env")
     key = os.getenv("AMAP_KEY", "").strip()
