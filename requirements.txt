@@ -1,0 +1,8 @@
+# 全流程依赖（版本下限按实际验证过的写）
+streamlit>=1.36      # 界面框架，同时带上 altair / pydeck
+pandas>=2.2          # 表格与数据整理
+altair>=5.0          # 成本拆解堆叠图
+pydeck>=0.9          # 深圳地图
+
+# 高德 Key 放 .env（参考 .env.example），不要提交
+# 抓取与 HTTP 请求全部用标准库 urllib，不需要 requests
