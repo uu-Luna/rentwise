@@ -267,15 +267,36 @@ def load_env_file(path: str | Path) -> None:
             os.environ[key] = value
 
 
+def _key_from_streamlit_secrets() -> str:
+    """Streamlit Cloud 上的密钥来源。
+
+    云端没有 .env（被 .gitignore 排除），密钥放在应用后台的 Secrets 里，
+    通过 st.secrets 读取。本地运行时没有 Secrets，这里静默返回空。
+    """
+    try:
+        import streamlit as st
+
+        value = st.secrets.get("AMAP_KEY", "")
+    except Exception:
+        return ""
+    return str(value).strip()
+
+
 def get_api_key() -> str:
-    # 项目根目录的 .env 优先，其次环境变量
-    return "758c888525b9ebecb7210b3e34f3450f"
+    """密钥优先级：环境变量 / .env（本地） → Streamlit Secrets（云端）。
+
+    ⚠️ 绝对不要把 Key 写死在代码里：仓库是公开的，写进代码等于公开发布，
+    GitHub 的提交历史里也删不干净。必须用 .env（本地）或 Secrets（云端）。
+    """
     root = Path(__file__).resolve().parents[2]
     load_env_file(root / ".env")
     key = os.getenv("AMAP_KEY", "").strip()
     if not key:
+        key = _key_from_streamlit_secrets()
+    if not key:
         raise AmapError(
-            "缺少 AMAP_KEY。复制 .env.example 为 .env 并填入你的高德 Web 服务 Key。"
+            "缺少 AMAP_KEY。本地：复制 .env.example 为 .env 并填入 Key；"
+            'Streamlit Cloud：应用设置 → Secrets 里填 AMAP_KEY = "你的Key"。'
         )
     return key
 

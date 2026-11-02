@@ -191,6 +191,28 @@ rentwise/
 
 ---
 
+## 部署到 Streamlit Cloud
+
+仓库里已经提交了一份数据库快照（`data/rentwise.db`，含 2,940 个已补坐标），所以云端装上就能跑，不需要在云端重新抓数据。
+
+**只有一件事必须手动做：配密钥。**
+
+1. 打开 <https://share.streamlit.io/> → 选中你的 app → **Settings → Secrets**
+2. 填入：
+
+```toml
+AMAP_KEY = "你的高德 Web 服务 Key"
+```
+
+3. 保存后点 **Reboot app**
+
+代码的读取顺序是：`st.secrets` → 环境变量 → `.env`（本地）。云端没有 `.env`，所以 Secrets 是唯一来源。
+
+> ⚠️ **绝不要把 Key 写进代码。** 公开仓库里写死 Key 等于公开发布，且 GitHub 的提交历史删不干净。
+> 一旦泄露，去[高德控制台](https://console.amap.com/)删掉该 Key 重新生成。
+
+---
+
 ## License
 
 MIT

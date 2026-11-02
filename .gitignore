@@ -4,10 +4,12 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 
-# 数据库：可随时由脚本重建，不进仓库
+# 数据库：本地可随时重建，但为了让 Streamlit Cloud 装上就能跑，
+# 例外提交一份快照（含已补好的 2,940 个坐标，重建是补不回来的）
 data/*.db
 data/*.db-wal
 data/*.db-shm
+!data/rentwise.db
 
 # 原始数据：政府公开数据，但全量镜像不随仓库分发
 # 使用者跑 scripts/fetch_reference_prices.py 自己取
