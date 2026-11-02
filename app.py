@@ -296,6 +296,23 @@ def main() -> None:
     hero()
 
     conn = get_conn(str(DB_PATH))
+
+    # 空库保护：connect() 会自动建表，所以库里没数据时不会报错，
+    # 只会显示「中位租金 ¥0 / 没有候选」，非常容易被误认为是程序坏了。
+    n_quotes = conn.execute("SELECT COUNT(*) FROM rent_quotes").fetchone()[0]
+    if n_quotes == 0:
+        st.error(
+            f"**数据库是空的**（{DB_PATH}）。\n\n"
+            "先运行下面两条命令：\n\n"
+            "```bash\n"
+            "python scripts/fetch_reference_prices.py\n"
+            "python scripts/build_db.py\n"
+            "```\n\n"
+            "如果你是在别处复制了一份项目，注意数据库不会跟着复制——"
+            "`data/` 目录在 `.gitignore` 里。"
+        )
+        return
+
     layout_labels = [f"{lay.label}（{lay.area_sqm:.0f}㎡）" for lay in LAYOUTS]
 
     with st.sidebar:
